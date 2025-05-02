@@ -31,7 +31,7 @@ type Interpreter struct {
 
 func (i *Interpreter) nextInput() int {
 	if i.current >= len(i.input) {
-		i.error(fmt.Sprintf("enough input tokens at nr: %v", i.current+1))
+		i.error(fmt.Sprintf("not enough input tokens at nr: %v", i.current+1))
 	}
 	input := i.input[i.current]
 	i.current++
@@ -68,8 +68,8 @@ func (i *Interpreter) visitReadStmt(s *ReadStmt) {
 
 func (i *Interpreter) visitWriteStmt(s *WriteStmt) {
 	for _, k := range s.Vars {
-		v := i.memory[k]
-		if v == 0 {
+		v, ok := i.memory[k]
+		if !ok {
 			i.error(fmt.Sprintf("undefined variable: %v", k))
 		}
 		i.output = append(i.output, v)

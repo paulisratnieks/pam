@@ -106,7 +106,6 @@ func (e *RootNode) accept(i *Interpreter) { i.visitRootNode(e) }
 func (e *RootNode) Print() string {
 	return fmt.Sprintf("%v", stmtsString(e.Stmts))
 }
-
 func (e *BasicIntLit) exprNode()                 {}
 func (e *BasicIntLit) intExprNode()              {}
 func (e *BasicIntLit) accept(i *Interpreter) int { return i.visitBasicIntLit(e) }

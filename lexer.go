@@ -155,7 +155,11 @@ func (l *Lexer) Scan() ([]Token, []error) {
 }
 
 func (l *Lexer) addToken(t TokenType) {
-	l.tokens = append(l.tokens, Token{Type: t, Lexeme: l.source[l.start:l.current], Line: l.line})
+	l.tokens = append(l.tokens, newToken(t, l.source[l.start:l.current], l.line))
+}
+
+func newToken(t TokenType, le string, li int) Token {
+	return Token{t, le, li}
 }
 
 func (l *Lexer) addError(e error) {
