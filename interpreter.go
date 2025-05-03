@@ -6,20 +6,20 @@ import (
 )
 
 const (
-	Int  = "int"
-	Bool = "bool"
+	integer = "int"
+	boolean = "bool"
 )
 
 type VisitableVoid interface {
-	accept(i *Interpreter)
+	Accept(i *Interpreter)
 }
 
 type VisitableInt interface {
-	accept(i *Interpreter) int
+	Accept(i *Interpreter) int
 }
 
 type VisitableBool interface {
-	accept(i *Interpreter) bool
+	Accept(i *Interpreter) bool
 }
 
 type Interpreter struct {
@@ -50,12 +50,12 @@ func NewInterpreter(input []int) *Interpreter {
 }
 
 func (i *Interpreter) Interpret(s *RootNode) {
-	s.accept(i)
+	s.Accept(i)
 }
 
 func (i *Interpreter) visitRootNode(n *RootNode) {
 	for _, stmt := range n.Stmts {
-		stmt.accept(i)
+		stmt.Accept(i)
 	}
 }
 
@@ -77,33 +77,33 @@ func (i *Interpreter) visitWriteStmt(s *WriteStmt) {
 }
 
 func (i *Interpreter) visitAssignStmt(s *AssignStmt) {
-	i.memory[s.Id] = s.Value.accept(i)
+	i.memory[s.Id] = s.Value.Accept(i)
 }
 
 func (i *Interpreter) visitCondStmt(s *CondStmt) {
-	if s.Cond.accept(i) {
+	if s.Cond.Accept(i) {
 		for _, stmt := range s.If {
-			stmt.accept(i)
+			stmt.Accept(i)
 		}
 	} else {
 		for _, stmt := range s.Else {
-			stmt.accept(i)
+			stmt.Accept(i)
 		}
 	}
 }
 
 func (i *Interpreter) visitLoopStmt(s *LoopStmt) {
-	cond := s.Cond.accept(i)
+	cond := s.Cond.Accept(i)
 	for cond {
 		for _, stmt := range s.Stmts {
-			stmt.accept(i)
+			stmt.Accept(i)
 		}
-		cond = s.Cond.accept(i)
+		cond = s.Cond.Accept(i)
 	}
 }
 
 func (i *Interpreter) visitBasicIntLit(e *BasicIntLit) int {
-	if e.Type == IDENTIFIER {
+	if e.Type == Identifier {
 		return i.memory[e.Value]
 	}
 
@@ -115,19 +115,19 @@ func (i *Interpreter) visitBasicIntLit(e *BasicIntLit) int {
 }
 
 func (i *Interpreter) visitBasicBoolLit(e *BasicBoolLit) bool {
-	return e.Type == TRUE
+	return e.Type == True
 }
 
 func (i *Interpreter) visitBinaryIntExpr(e *BinaryIntExpr) int {
-	left := e.Left.accept(i)
-	right := e.Right.accept(i)
+	left := e.Left.Accept(i)
+	right := e.Right.Accept(i)
 
 	switch e.Op {
-	case PLUS:
+	case Plus:
 		return left + right
-	case MINUS:
+	case Minus:
 		return left - right
-	case STAR:
+	case Star:
 		return left * right
 	default:
 		return left / right
@@ -148,41 +148,41 @@ func (i *Interpreter) visitBinaryBoolExpr(e *BinaryBoolExpr) bool {
 	}
 
 	if isLeftBool && isRightBool {
-		left := leftBool.accept(i)
-		right := rightBool.accept(i)
+		left := leftBool.Accept(i)
+		right := rightBool.Accept(i)
 
 		switch e.Op {
-		case AND:
+		case And:
 			return left && right
 		default:
 			return left || right
 		}
 	} else if isLeftInt && isRightInt {
-		left := leftInt.accept(i)
-		right := rightInt.accept(i)
+		left := leftInt.Accept(i)
+		right := rightInt.Accept(i)
 
 		switch e.Op {
-		case EQUAL:
+		case Equal:
 			return left == right
-		case LESS:
+		case Less:
 			return left < right
-		case GREATER:
+		case Greater:
 			return left > right
-		case LESS_EQUAL:
+		case LessEqual:
 			return left <= right
-		case GREATER_EQUAL:
+		case GreaterEqual:
 			return left >= right
 		default:
 			return left != right
 		}
 	} else {
-		leftType := Int
+		leftType := integer
 		if isLeftBool {
-			leftType = Bool
+			leftType = boolean
 		}
-		rightType := Int
+		rightType := integer
 		if isRightBool {
-			rightType = Bool
+			rightType = boolean
 		}
 		i.error(fmt.Sprintf("type mismatch between expressions: %v %v %v", leftType, e.Op, rightType))
 		return false
@@ -190,13 +190,13 @@ func (i *Interpreter) visitBinaryBoolExpr(e *BinaryBoolExpr) bool {
 }
 
 func (i *Interpreter) visitUnaryBoolExpr(e *UnaryBoolExpr) bool {
-	return !e.Expr.accept(i)
+	return !e.Expr.Accept(i)
 }
 
 func (i *Interpreter) visitParenIntExpr(e *ParenIntExpr) int {
-	return e.Value.accept(i)
+	return e.Value.Accept(i)
 }
 
 func (i *Interpreter) visitParenBoolExpr(e *ParenBoolExpr) bool {
-	return e.Value.accept(i)
+	return e.Value.Accept(i)
 }

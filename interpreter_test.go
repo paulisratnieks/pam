@@ -21,24 +21,24 @@ func TestInterpreter(t *testing.T) {
 				newReadStmt([]string{"x", "y"}),
 				newLoopStmt(
 					newBinaryBoolExpr(
-						newBasicIntLit(IDENTIFIER, "x"),
-						LESS_GREATER,
-						newBasicIntLit(IDENTIFIER, "y"),
+						newBasicIntLit(Identifier, "x"),
+						LessGreater,
+						newBasicIntLit(Identifier, "y"),
 					),
 					[]Stmt{
 						newCondStmt(
 							newBinaryBoolExpr(
-								newBasicIntLit(IDENTIFIER, "x"),
-								LESS_EQUAL,
-								newBasicIntLit(IDENTIFIER, "y"),
+								newBasicIntLit(Identifier, "x"),
+								LessEqual,
+								newBasicIntLit(Identifier, "y"),
 							),
 							[]Stmt{
 								newAssignStmt(
 									"y",
 									newBinaryIntExpr(
-										newBasicIntLit(IDENTIFIER, "y"),
-										MINUS,
-										newBasicIntLit(IDENTIFIER, "x"),
+										newBasicIntLit(Identifier, "y"),
+										Minus,
+										newBasicIntLit(Identifier, "x"),
 									),
 								),
 							},
@@ -46,9 +46,9 @@ func TestInterpreter(t *testing.T) {
 								newAssignStmt(
 									"x",
 									newBinaryIntExpr(
-										newBasicIntLit(IDENTIFIER, "x"),
-										MINUS,
-										newBasicIntLit(IDENTIFIER, "y"),
+										newBasicIntLit(Identifier, "x"),
+										Minus,
+										newBasicIntLit(Identifier, "y"),
 									),
 								),
 							},

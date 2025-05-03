@@ -5,55 +5,55 @@ import "fmt"
 type TokenType string
 
 const (
-	LEFT_PAREN    = "LEFT_PAREN"
-	RIGHT_PAREN   = "RIGHT_PAREN"
-	PLUS          = "PLUS"
-	MINUS         = "MINUS"
-	STAR          = "STAR"
-	BACKSLASH     = "BACKSLASH"
-	COMMMA        = "COMMMA"
-	OR            = "OR"
-	AND           = "AND"
-	NOT           = "NOT"
-	EQUAL         = "EQUAL"
-	GREATER       = "GREATER"
-	LESS          = "LESS"
-	GREATER_EQUAL = "GREATER_EQUAL"
-	LESS_EQUAL    = "LESS_EQUAL"
-	LESS_GREATER  = "LESS_GREATER"
-	COLON_EQUAL   = "COLON_EQUAL"
-	SEMICOLON     = "SEMICOLON"
-	IDENTIFIER    = "IDENTIFIER"
-	NUMBER        = "NUMBER"
-	TRUE          = "TRUE"
-	FALSE         = "FALSE"
-	READ          = "READ"
-	WRITE         = "WRITE"
-	IF            = "IF"
-	ELSE          = "ELSE"
-	THEN          = "THEN"
-	FI            = "FI"
-	WHILE         = "WHILE"
-	DO            = "DO"
-	END           = "END"
-	EOF           = "EOF"
+	LeftParen    = "LeftParen"
+	RightParen   = "RightParen"
+	Plus         = "Plus"
+	Minus        = "Minus"
+	Star         = "Star"
+	Backslash    = "Backslash"
+	Comma        = "Comma"
+	Or           = "Or"
+	And          = "And"
+	Not          = "Not"
+	Equal        = "Equal"
+	Greater      = "Greater"
+	Less         = "Less"
+	GreaterEqual = "GreaterEqual"
+	LessEqual    = "LessEqual"
+	LessGreater  = "LessGreater"
+	ColonEqual   = "ColonEqual"
+	Semicolon    = "Semicolon"
+	Identifier   = "Identifier"
+	Number       = "Number"
+	True         = "True"
+	False        = "False"
+	Read         = "Read"
+	Write        = "Write"
+	If           = "If"
+	Else         = "Else"
+	Then         = "Then"
+	Fi           = "Fi"
+	While        = "While"
+	Do           = "Do"
+	End          = "End"
+	Eof          = "Eof"
 )
 
 var keywords = map[string]TokenType{
-	"if":    IF,
-	"else":  ELSE,
-	"then":  THEN,
-	"fi":    FI,
-	"while": WHILE,
-	"do":    DO,
-	"end":   END,
-	"write": WRITE,
-	"read":  READ,
-	"or":    OR,
-	"and":   AND,
-	"not":   NOT,
-	"true":  TRUE,
-	"false": FALSE,
+	"if":    If,
+	"else":  Else,
+	"then":  Then,
+	"fi":    Fi,
+	"while": While,
+	"do":    Do,
+	"end":   End,
+	"write": Write,
+	"read":  Read,
+	"or":    Or,
+	"and":   And,
+	"not":   Not,
+	"true":  True,
+	"false": False,
 }
 
 type Token struct {
@@ -87,40 +87,40 @@ func (l *Lexer) Scan() ([]Token, []error) {
 
 		switch char := l.nextChar(); char {
 		case '(':
-			l.addToken(LEFT_PAREN)
+			l.addToken(LeftParen)
 		case ')':
-			l.addToken(RIGHT_PAREN)
+			l.addToken(RightParen)
 		case '+':
-			l.addToken(PLUS)
+			l.addToken(Plus)
 		case '-':
-			l.addToken(MINUS)
+			l.addToken(Minus)
 		case '*':
-			l.addToken(STAR)
+			l.addToken(Star)
 		case '/':
-			l.addToken(BACKSLASH)
+			l.addToken(Backslash)
 		case ',':
-			l.addToken(COMMMA)
+			l.addToken(Comma)
 		case ';':
-			l.addToken(SEMICOLON)
+			l.addToken(Semicolon)
 		case ':':
 			l.nextChar()
-			l.addToken(COLON_EQUAL)
+			l.addToken(ColonEqual)
 		case '>':
 			if l.match('=') {
-				l.addToken(GREATER_EQUAL)
+				l.addToken(GreaterEqual)
 			} else {
-				l.addToken(GREATER)
+				l.addToken(Greater)
 			}
 		case '<':
 			if l.match('=') {
-				l.addToken(LESS_EQUAL)
+				l.addToken(LessEqual)
 			} else if l.match('>') {
-				l.addToken(LESS_GREATER)
+				l.addToken(LessGreater)
 			} else {
-				l.addToken(LESS)
+				l.addToken(Less)
 			}
 		case '=':
-			l.addToken(EQUAL)
+			l.addToken(Equal)
 		case '\n':
 			l.line++
 		case ' ':
@@ -132,7 +132,7 @@ func (l *Lexer) Scan() ([]Token, []error) {
 				for isDigit(l.peek()) {
 					l.nextChar()
 				}
-				l.addToken(NUMBER)
+				l.addToken(Number)
 			} else if isAlphaNum(char) {
 				for isAlphaNum(l.peek()) {
 					l.nextChar()
@@ -141,7 +141,7 @@ func (l *Lexer) Scan() ([]Token, []error) {
 				if kw != "" {
 					l.addToken(kw)
 				} else {
-					l.addToken(IDENTIFIER)
+					l.addToken(Identifier)
 				}
 			} else {
 				l.addError(fmt.Errorf("unexpected character '%c' at line %d column ", char, l.line))
@@ -149,7 +149,7 @@ func (l *Lexer) Scan() ([]Token, []error) {
 		}
 	}
 
-	l.addToken(EOF)
+	l.addToken(Eof)
 
 	return l.tokens, l.errors
 }

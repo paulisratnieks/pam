@@ -102,69 +102,69 @@ type LoopStmt struct {
 	Stmts []Stmt
 }
 
-func (e *RootNode) accept(i *Interpreter) { i.visitRootNode(e) }
+func (e *RootNode) Accept(i *Interpreter) { i.visitRootNode(e) }
 func (e *RootNode) Print() string {
 	return fmt.Sprintf("%v", stmtsString(e.Stmts))
 }
 func (e *BasicIntLit) exprNode()                 {}
 func (e *BasicIntLit) intExprNode()              {}
-func (e *BasicIntLit) accept(i *Interpreter) int { return i.visitBasicIntLit(e) }
+func (e *BasicIntLit) Accept(i *Interpreter) int { return i.visitBasicIntLit(e) }
 func (e *BasicIntLit) Print() string {
 	return fmt.Sprintf("%v:%v", e.Type, e.Value)
 }
 func (e *BasicBoolLit) exprNode()                  {}
 func (e *BasicBoolLit) boolExprNode()              {}
-func (e *BasicBoolLit) accept(i *Interpreter) bool { return i.visitBasicBoolLit(e) }
+func (e *BasicBoolLit) Accept(i *Interpreter) bool { return i.visitBasicBoolLit(e) }
 func (e *BasicBoolLit) Print() string {
 	return fmt.Sprintf("%v", e.Type)
 }
 func (e *BinaryIntExpr) exprNode()                 {}
 func (e *BinaryIntExpr) intExprNode()              {}
-func (e *BinaryIntExpr) accept(i *Interpreter) int { return i.visitBinaryIntExpr(e) }
+func (e *BinaryIntExpr) Accept(i *Interpreter) int { return i.visitBinaryIntExpr(e) }
 func (e *BinaryIntExpr) Print() string {
 	return fmt.Sprintf("%v %v %v", e.Left.Print(), e.Op, e.Right.Print())
 }
 func (e *BinaryBoolExpr) exprNode()                  {}
 func (e *BinaryBoolExpr) boolExprNode()              {}
-func (e *BinaryBoolExpr) accept(i *Interpreter) bool { return i.visitBinaryBoolExpr(e) }
+func (e *BinaryBoolExpr) Accept(i *Interpreter) bool { return i.visitBinaryBoolExpr(e) }
 func (e *BinaryBoolExpr) Print() string {
 	return fmt.Sprintf("%v %v %v", e.Left.Print(), e.Op, e.Right.Print())
 }
 func (e *UnaryBoolExpr) exprNode()                  {}
 func (e *UnaryBoolExpr) boolExprNode()              {}
-func (e *UnaryBoolExpr) accept(i *Interpreter) bool { return i.visitUnaryBoolExpr(e) }
+func (e *UnaryBoolExpr) Accept(i *Interpreter) bool { return i.visitUnaryBoolExpr(e) }
 func (e *UnaryBoolExpr) Print() string {
 	return fmt.Sprintf("%v %v", e.Op, e.Expr.Print())
 }
 func (e *ParenIntExpr) exprNode()                 {}
 func (e *ParenIntExpr) intExprNode()              {}
-func (e *ParenIntExpr) accept(i *Interpreter) int { return i.visitParenIntExpr(e) }
+func (e *ParenIntExpr) Accept(i *Interpreter) int { return i.visitParenIntExpr(e) }
 func (e *ParenIntExpr) Print() string {
 	return fmt.Sprintf("( %v )", e.Value.Print())
 }
 func (e *ParenBoolExpr) exprNode()                  {}
 func (e *ParenBoolExpr) boolExprNode()              {}
-func (e *ParenBoolExpr) accept(i *Interpreter) bool { return i.visitParenBoolExpr(e) }
+func (e *ParenBoolExpr) Accept(i *Interpreter) bool { return i.visitParenBoolExpr(e) }
 func (e *ParenBoolExpr) Print() string {
 	return fmt.Sprintf("( %v )", e.Value.Print())
 }
 func (e *AssignStmt) stmtNode()             {}
-func (e *AssignStmt) accept(i *Interpreter) { i.visitAssignStmt(e) }
+func (e *AssignStmt) Accept(i *Interpreter) { i.visitAssignStmt(e) }
 func (e *AssignStmt) Print() string {
 	return fmt.Sprintf("%v:=(%v)", e.Id, e.Value.Print())
 }
 func (e *ReadStmt) stmtNode()             {}
-func (e *ReadStmt) accept(i *Interpreter) { i.visitReadStmt(e) }
+func (e *ReadStmt) Accept(i *Interpreter) { i.visitReadStmt(e) }
 func (e *ReadStmt) Print() string {
 	return fmt.Sprintf("read: %v", e.Vars)
 }
 func (e *WriteStmt) stmtNode()             {}
-func (e *WriteStmt) accept(i *Interpreter) { i.visitWriteStmt(e) }
+func (e *WriteStmt) Accept(i *Interpreter) { i.visitWriteStmt(e) }
 func (e *WriteStmt) Print() string {
 	return fmt.Sprintf("write: %v", e.Vars)
 }
 func (e *CondStmt) stmtNode()             {}
-func (e *CondStmt) accept(i *Interpreter) { i.visitCondStmt(e) }
+func (e *CondStmt) Accept(i *Interpreter) { i.visitCondStmt(e) }
 func (e *CondStmt) Print() string {
 	if e.Else != nil {
 		return fmt.Sprintf("if (%v) then (%v) else (%v) fi", e.Cond.Print(), stmtsString(e.If), stmtsString(e.Else))
@@ -172,7 +172,7 @@ func (e *CondStmt) Print() string {
 	return fmt.Sprintf("if (%v) then (%v) fi", e.Cond.Print(), stmtsString(e.If))
 }
 func (e *LoopStmt) stmtNode()             {}
-func (e *LoopStmt) accept(i *Interpreter) { i.visitLoopStmt(e) }
+func (e *LoopStmt) Accept(i *Interpreter) { i.visitLoopStmt(e) }
 func (e *LoopStmt) Print() string {
 	return fmt.Sprintf("while (%v) do (%v) end", e.Cond.Print(), stmtsString(e.Stmts))
 }
@@ -254,7 +254,7 @@ func (p *Parser) match(t TokenType) bool {
 }
 
 func (p *Parser) isAtEnd() bool {
-	return p.peek().Type == EOF
+	return p.peek().Type == Eof
 }
 
 func (p *Parser) nextToken() Token {
@@ -284,12 +284,12 @@ func (p *Parser) progr() []Stmt {
 func (p *Parser) series() []Stmt {
 	s := make([]Stmt, 0)
 	s = append(s, p.statement())
-	p.consume(SEMICOLON)
+	p.consume(Semicolon)
 
 	t := p.peek().Type
-	for !p.isAtEnd() && !(t == END || t == ELSE || t == FI) {
+	for !p.isAtEnd() && !(t == End || t == Else || t == Fi) {
 		s = append(s, p.statement())
-		p.consume(SEMICOLON)
+		p.consume(Semicolon)
 		t = p.peek().Type
 	}
 
@@ -298,13 +298,13 @@ func (p *Parser) series() []Stmt {
 
 func (p *Parser) statement() Stmt {
 	switch p.peek().Type {
-	case IDENTIFIER:
+	case Identifier:
 		return p.assignStmt()
-	case READ:
+	case Read:
 		return p.readStmt()
-	case WRITE:
+	case Write:
 		return p.writeStmt()
-	case IF:
+	case If:
 		return p.condStmt()
 	default:
 		return p.loopStmt()
@@ -313,34 +313,34 @@ func (p *Parser) statement() Stmt {
 
 func (p *Parser) assignStmt() Stmt {
 	id := p.nextToken()
-	p.consume(COLON_EQUAL)
+	p.consume(ColonEqual)
 
 	return newAssignStmt(id.Lexeme, p.expression())
 }
 
 func (p *Parser) readStmt() Stmt {
-	p.consume(READ)
+	p.consume(Read)
 
 	return newReadStmt(p.varList())
 }
 
 func (p *Parser) writeStmt() Stmt {
-	p.consume(WRITE)
+	p.consume(Write)
 
 	return newWriteStmt(p.varList())
 }
 
 func (p *Parser) condStmt() Stmt {
-	p.consume(IF)
+	p.consume(If)
 	cond := p.logical()
-	p.consume(THEN)
+	p.consume(Then)
 	left := p.series()
 
 	var right []Stmt
-	if p.match(ELSE) {
+	if p.match(Else) {
 		right = p.series()
 	}
-	p.consume(FI)
+	p.consume(Fi)
 
 	if right != nil {
 		return newCondStmt(cond, left, right)
@@ -350,11 +350,11 @@ func (p *Parser) condStmt() Stmt {
 }
 
 func (p *Parser) loopStmt() Stmt {
-	p.consume(WHILE)
+	p.consume(While)
 	cond := p.logical()
-	p.consume(DO)
+	p.consume(Do)
 	series := p.series()
-	p.consume(END)
+	p.consume(End)
 
 	return newLoopStmt(cond, series)
 }
@@ -364,7 +364,7 @@ func (p *Parser) varList() []string {
 	t := p.nextToken()
 	vars = append(vars, t.Lexeme)
 
-	for p.match(COMMMA) {
+	for p.match(Comma) {
 		vars = append(vars, p.nextToken().Lexeme)
 	}
 
@@ -378,7 +378,7 @@ func (p *Parser) logical() BoolExpr {
 func (p *Parser) logicalOr() BoolExpr {
 	e := p.logicalAnd()
 
-	for p.match(OR) {
+	for p.match(Or) {
 		op := p.previous().Type
 		right := p.logicalAnd()
 		e = newBinaryBoolExpr(e, op, right)
@@ -390,7 +390,7 @@ func (p *Parser) logicalOr() BoolExpr {
 func (p *Parser) logicalAnd() BoolExpr {
 	e := p.logicalNot()
 
-	for p.match(AND) {
+	for p.match(And) {
 		op := p.previous().Type
 		right := p.logicalNot()
 		e = newBinaryBoolExpr(e, op, right)
@@ -400,7 +400,7 @@ func (p *Parser) logicalAnd() BoolExpr {
 }
 
 func (p *Parser) logicalNot() BoolExpr {
-	if p.match(NOT) {
+	if p.match(Not) {
 		return newUnaryBoolExpr(p.previous().Type, p.logical())
 	}
 
@@ -409,7 +409,7 @@ func (p *Parser) logicalNot() BoolExpr {
 
 func (p *Parser) logicalRelation() BoolExpr {
 	t := p.peek()
-	if t.Type == TRUE || t.Type == FALSE || t.Type == LEFT_PAREN {
+	if t.Type == True || t.Type == False || t.Type == LeftParen {
 		return p.logicalElem()
 	} else {
 		return newBinaryBoolExpr(p.expression(), p.nextToken().Type, p.expression())
@@ -419,11 +419,11 @@ func (p *Parser) logicalRelation() BoolExpr {
 func (p *Parser) logicalElem() BoolExpr {
 	t := p.nextToken()
 
-	if t.Type == TRUE || t.Type == FALSE {
+	if t.Type == True || t.Type == False {
 		return newBasicBoolLit(t.Type)
 	} else {
 		e := p.logical()
-		p.consume(RIGHT_PAREN)
+		p.consume(RightParen)
 		return newParenBoolExpr(e)
 	}
 }
@@ -431,7 +431,7 @@ func (p *Parser) logicalElem() BoolExpr {
 func (p *Parser) expression() IntExpr {
 	exp := p.term()
 
-	for p.match(PLUS) || p.match(MINUS) {
+	for p.match(Plus) || p.match(Minus) {
 		op := p.previous().Type
 		right := p.term()
 		exp = newBinaryIntExpr(exp, op, right)
@@ -443,7 +443,7 @@ func (p *Parser) expression() IntExpr {
 func (p *Parser) term() IntExpr {
 	elem := p.element()
 
-	for p.match(STAR) || p.match(BACKSLASH) {
+	for p.match(Star) || p.match(Backslash) {
 		op := p.previous().Type
 		right := p.element()
 		elem = newBinaryIntExpr(elem, op, right)
@@ -455,11 +455,11 @@ func (p *Parser) term() IntExpr {
 func (p *Parser) element() IntExpr {
 	t := p.nextToken()
 	switch t.Type {
-	case NUMBER, IDENTIFIER:
+	case Number, Identifier:
 		return newBasicIntLit(t.Type, t.Lexeme)
 	default:
 		elem := newParenIntExpr(p.expression())
-		p.consume(RIGHT_PAREN)
+		p.consume(RightParen)
 		return elem
 	}
 }
